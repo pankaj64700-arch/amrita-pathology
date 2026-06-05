@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("PATIENT")
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  address String?
+  phone   String?
+
+  reports        Report[]
+  sampleRequests SampleRequest[]
+}
+
+model SampleRequest {
+  id            String   @id @default(cuid())
+  patientName   String
+  phone         String
+  address       String
+  testName      String
+  preferredDate DateTime
+  status        String   @default("PENDING")
+
+  userId String?
+  user   User? @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Report {
+  id         String @id @default(cuid())
+  reportName String
+  fileUrl    String
+
+  patientId String
+  patient   User @relation(fields: [patientId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Announcement {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PathologistProfile {
+  id            String @id @default(cuid())
+  name          String
+  qualification String
+  experience    String
+  bio           String
+
+  photoUrl String?
+  phone    String?
+  email    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  price       String?
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
