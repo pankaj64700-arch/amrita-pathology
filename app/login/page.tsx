@@ -49,10 +49,13 @@ export default function LoginPage() {
 
       setMessage("Login successful");
 
-setTimeout(() => {
-  router.replace("/dashboard");
-  router.refresh();
-}, 500);
+if (role === "ADMIN") {
+  router.push("/admin");
+} else if (role === "PATHOLOGIST") {
+  router.push("/pathologist");
+} else {
+  router.push("/dashboard");
+}
       
     } catch (error) {
       console.error("Login error:", error);
